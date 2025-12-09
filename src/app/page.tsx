@@ -1,13 +1,19 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
 import { CreditSection } from "./_components/CreditSection";
 import { PrivacySection } from "./_components/PrivacySection";
 
+
 export default function Home() {
+  // step state-ээ энд зарлана
+  const [step, setStep] = useState(1);
+
   return (
-    
-     {step === 1 && <CreditSection />}
-     {step === 2 && <PrivacySection />}
-     { step === 3 && <}
-  
+    <>
+      {step === 1 && <CreditSection setStep={setStep} />}
+      {step === 2 && <PrivacySection setStep={setStep} />}
+      {step === 3 && <PersonalSection setStep={setStep} />}
+    </>
   );
 }

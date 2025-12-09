@@ -1,8 +1,10 @@
 "use client";
 
+import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+import { cn } from "@/lib/utils";
 import {
   Form,
   FormField,
@@ -13,18 +15,38 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { set } from "zod";
 
+const creditSchema = z.object({
+  firstName: z
+    .string()
+    .min(1, "First name is required.")
+    .regex(
+      /^[A-Za-zА-Яа-яӨөҮүЁё]+$/,
+      "First name cannot contain special characters or numbers."
+    ),
+  lastName: z
+    .string()
+    .min(1, "Last name is required.")
+    .regex(
+      /^[A-Za-zА-Яа-яӨөҮүЁё]+$/,
+      "Last name cannot contain special characters or numbers."
+    ),
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters long.")
+    .max(20, "Username must be at most 20 characters long."),
+});
 
-type FormValues = {
-  firstName: string;
-  lastName: string;
-  username: string;
+type CreditFormValues = z.infer<typeof creditSchema>;
+
+type CreditSectionProps = {
+  setStep: (step: number) => void;
 };
 
-export const CreditSection = ({ setStep }: { setStep: (step: number) => void  }) => {
-  const form = useForm<FormValues>({
-    mode: "onChange", 
+export const CreditSection = ({ setStep }: CreditSectionProps) => {
+  const form = useForm<CreditFormValues>({
+    resolver: zodResolver(creditSchema),
+    mode: "onChange",
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -32,125 +54,99 @@ export const CreditSection = ({ setStep }: { setStep: (step: number) => void  })
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    console.log(values);
-  };
+  function onSubmit(values: CreditFormValues) {
+    console.log("Step 1 values:", values);
+    setStep(2); // дараагийн section рүү шилжинэ
+  }
 
   return (
-    
-      
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        {/* First name */}
+        <FormField
+          control={form.control}
+          name="firstName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm text-gray-800">
+                First name <span className="text-red-500">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Placeholder"
+                  {...field}
+                  className={cn(
+                    "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
+                    form.formState.errors.firstName
+                      ? "border-red-500 bg-red-50"
+                      : "border-blue-300"
+                  )}
+                />
+              </FormControl>
+              <FormMessage className="text-xs text-red-500" />
+            </FormItem>
+          )}
+        />
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-           
-            <FormField
-              control={form.control}
-              name="firstName"
-              rules={{
-                required: "First name is required.",
-                pattern: {
-                  value: /^[A-Za-zА-Яа-яӨөҮүЁё]+$/,
-                  message: "First name cannot contain special characters or numbers.",
-                },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm text-gray-800">
-                    First name <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Placeholder"
-                      {...field}
-                      className={cn(
-                        "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
-                        form.formState.errors.firstName
-                          ? "border-red-500 bg-red-50"
-                          : "border-blue-300"
-                      )}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs text-red-500" />
-                </FormItem>
-              )}
-            />
+        {/* Last name */}
+        <FormField
+          control={form.control}
+          name="lastName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm text-gray-800">
+                Last name <span className="text-red-500">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Placeholder"
+                  {...field}
+                  className={cn(
+                    "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
+                    form.formState.errors.lastName
+                      ? "border-red-500 bg-red-50"
+                      : "border-blue-300"
+                  )}
+                />
+              </FormControl>
+              <FormMessage className="text-xs text-red-500" />
+            </FormItem>
+          )}
+        />
 
-           
-            <FormField
-              control={form.control}
-              name="lastName"
-              rules={{
-                required: "Last name is required.",
-                pattern: {
-                  value: /^[A-Za-zА-Яа-яӨөҮүЁё]+$/,
-                  message: "Last name cannot contain special characters or numbers.",
-                },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm text-gray-800">
-                    Last name <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Placeholder"
-                      {...field}
-                      className={cn(
-                        "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
-                        form.formState.errors.lastName
-                          ? "border-red-500 bg-red-50"
-                          : "border-blue-300"
-                      )}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs text-red-500" />
-                </FormItem>
-              )}
-            />
+        {/* Username */}
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm text-gray-800">
+                Username <span className="text-red-500">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Placeholder"
+                  {...field}
+                  className={cn(
+                    "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
+                    form.formState.errors.username
+                      ? "border-red-500 bg-red-50"
+                      : "border-blue-300"
+                  )}
+                />
+              </FormControl>
+              <FormMessage className="text-xs text-red-500" />
+            </FormItem>
+          )}
+        />
 
-            
-            <FormField
-              control={form.control}
-              name="username"
-              rules={{
-                required: "Username is required.",
-                validate: (value) =>
-                  value === "Amgaa"
-                    ? "This username is already taken. Please choose another one."
-                    : true,
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm text-gray-800">
-                    Username <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Placeholder"
-                      {...field}
-                      className={cn(
-                        "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
-                        form.formState.errors.username
-                          ? "border-red-500 bg-red-50"
-                          : "border-blue-300"
-                      )}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs text-red-500" />
-                </FormItem>
-              )}
-            />
-
-            <Button
-            onClick={() => setStep(2)}
-              type="submit"
-              className="mt-2 w-full rounded-md bg-black py-3 text-sm font-medium text-white hover:bg-black/80"
-            >
-              Continue 1/3 ➜
-            </Button>
-          </form>
-        </Form>
-      
-   
+        <Button
+          type="submit"
+          className="mt-2 w-full rounded-md bg-black py-3 text-sm font-medium text-white hover:bg-black/80"
+        >
+          Continue 1/3 ➜
+        </Button>
+      </form>
+    </Form>
   );
 };
