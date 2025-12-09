@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { set } from "zod";
+
 
 type FormValues = {
   firstName: string;
@@ -20,7 +22,7 @@ type FormValues = {
   username: string;
 };
 
-export const CreditSection = () => {
+export const CreditSection = ({ setStep }: { setStep: (step: number) => void  }) => {
   const form = useForm<FormValues>({
     mode: "onChange", 
     defaultValues: {
@@ -35,15 +37,8 @@ export const CreditSection = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f3f4f6] px-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-md">
-        
-        <div className="mb-6 space-y-2">
-          <h1 className="text-2xl font-semibold">Join Us! 😎</h1>
-          <p className="text-sm text-gray-500">
-            Please provide all current information accurately.
-          </p>
-        </div>
+    
+      
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -147,6 +142,7 @@ export const CreditSection = () => {
             />
 
             <Button
+            onClick={() => setStep(2)}
               type="submit"
               className="mt-2 w-full rounded-md bg-black py-3 text-sm font-medium text-white hover:bg-black/80"
             >
@@ -154,7 +150,7 @@ export const CreditSection = () => {
             </Button>
           </form>
         </Form>
-      </div>
-    </div>
+      
+   
   );
 };
