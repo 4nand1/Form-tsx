@@ -14,9 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";    
+import { Button } from "@/components/ui/button";
 import { Header } from "./Header";
-
+import type { FormData } from "../page";
 
 const creditSchema = z.object({
   firstName: z
@@ -41,117 +41,117 @@ const creditSchema = z.object({
 
 type CreditFormValues = z.infer<typeof creditSchema>;
 
-type CreditSectionProps = {
-  setStep: (step: number) => void;
+type Props = {
+  data: FormData;
+  updateData: (values: Partial<FormData>) => void;
+  goNext: () => void;
 };
 
-export const CreditSection = ({ setStep }: CreditSectionProps) => {
+export const CreditSection = ({ data, updateData, goNext }: Props) => {
   const form = useForm<CreditFormValues>({
     resolver: zodResolver(creditSchema),
     mode: "onChange",
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      username: "",
+      firstName: data.firstName,
+      lastName: data.lastName,
+      username: data.username,
     },
   });
 
   function onSubmit(values: CreditFormValues) {
-    console.log("Step 1 values:", values);
-    setStep(2); // дараагийн section рүү шилжинэ
+    updateData(values);
+    goNext();
   }
 
   return (
     <div>
-        <Header step={1} />
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-        {/* First name */}
-        <FormField
-          control={form.control}
-          name="firstName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-sm text-gray-800">
-                First name <span className="text-red-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Placeholder"
-                  {...field}
-                  className={cn(
-                    "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
-                    form.formState.errors.firstName
-                      ? "border-red-500 bg-red-50"
-                      : "border-blue-300"
-                  )}
-                />
-              </FormControl>
-              <FormMessage className="text-xs text-red-500" />
-            </FormItem>
-          )}
-        />
+      <Header step={1} />
 
-        {/* Last name */}
-        <FormField
-          control={form.control}
-          name="lastName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-sm text-gray-800">
-                Last name <span className="text-red-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Placeholder"
-                  {...field}
-                  className={cn(
-                    "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
-                    form.formState.errors.lastName
-                      ? "border-red-500 bg-red-50"
-                      : "border-blue-300"
-                  )}
-                />
-              </FormControl>
-              <FormMessage className="text-xs text-red-500" />
-            </FormItem>
-          )}
-        />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm text-gray-800">
+                  First name <span className="text-red-500">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Placeholder"
+                    {...field}
+                    className={cn(
+                      "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
+                      form.formState.errors.firstName
+                        ? "border-red-500 bg-red-50"
+                        : "border-blue-300"
+                    )}
+                  />
+                </FormControl>
+                <FormMessage className="text-xs text-red-500" />
+              </FormItem>
+            )}
+          />
 
-        {/* Username */}
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-sm text-gray-800">
-                Username <span className="text-red-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Placeholder"
-                  {...field}
-                  className={cn(
-                    "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
-                    form.formState.errors.username
-                      ? "border-red-500 bg-red-50"
-                      : "border-blue-300"
-                  )}
-                />
-              </FormControl>
-              <FormMessage className="text-xs text-red-500" />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm text-gray-800">
+                  Last name <span className="text-red-500">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Placeholder"
+                    {...field}
+                    className={cn(
+                      "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
+                      form.formState.errors.lastName
+                        ? "border-red-500 bg-red-50"
+                        : "border-blue-300"
+                    )}
+                  />
+                </FormControl>
+                <FormMessage className="text-xs text-red-500" />
+              </FormItem>
+            )}
+          />
 
-        <Button
-          type="submit"
-          className="mt-2 w-full rounded-md bg-black py-3 text-sm font-medium text-white hover:bg-black/80"
-        >
-          Continue 1/3 ➜
-        </Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm text-gray-800">
+                  Username <span className="text-red-500">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Placeholder"
+                    {...field}
+                    className={cn(
+                      "mt-1 h-11 w-full rounded-md border px-3 text-sm focus-visible:ring-0",
+                      form.formState.errors.username
+                        ? "border-red-500 bg-red-50"
+                        : "border-blue-300"
+                    )}
+                  />
+                </FormControl>
+                <FormMessage className="text-xs text-red-500" />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            className="mt-2 w-full rounded-md bg-black py-3 text-sm font-medium text-white hover:bg-black/80"
+          >
+            Continue 1/3 ➜
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 };
