@@ -1,24 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+
 import { CreditSection } from "./_components/CreditSection";
 import { PrivacySection } from "./_components/PrivacySection";
 import { PersonalSection } from "./_components/PersonalSection";
 import { EndSection } from "./_components/EndSection";
 
-export type FormData = {
-  firstName: string;
-  lastName: string;
-  username: string;
-  email: string;
-  phone: string;
-  password: string;
-  dateOfBirth: string;
-  profileImage: File | null;
-};
-
 export default function Home() {
   const [step, setStep] = useState(1);
+
+  // ⭐ ШИНЭ: АЛХМЫН ЧИГЛЭЛ
+  const [direction, setDirection] = useState<1 | -1>(1);
 
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -27,45 +21,96 @@ export default function Home() {
     email: "",
     phone: "",
     password: "",
+    confirmPassword: "",
     dateOfBirth: "",
     profileImage: null,
   });
 
-  const updateFormData = (values: Partial<FormData>) => {
+  const updateData = (values: Partial<FormData>) =>
     setFormData((prev) => ({ ...prev, ...values }));
+
+  // ⭐ NEXT → баруун → зүүн
+  const next = () => {
+    setDirection(1);
+    setStep((s) => s + 1);
+  };
+
+  // ⭐ BACK → зүүн → баруун
+  const back = () => {
+    setDirection(-1);
+    setStep((s) => s - 1);
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f3f4f6] px-4">
-      <section className="w-full max-w-md rounded-2xl bg-white p-8 shadow-md">
-        {step === 1 && (
-          <CreditSection
-            data={formData}
-            updateData={updateFormData}
-            goNext={() => setStep(2)}
-          />
-        )}
+    <div className="flex justify-center py-10">
+      <div className="w-full max-w-md">
+        
+        <AnimatePresence mode="wait">
+          
+          {step === 1 && (
+            <motion.div
+              key="step1"
+              initial={{ opacity: 0, x: 40 * direction, rotate: 4 * direction }}
+              animate={{ opacity: 1, x: 0, rotate: 0 }}
+              exit={{ opacity: 0, x: -40 * direction, rotate: -4 * direction }}
+              transition={{ duration: 0.25 }}
+            >
+              <CreditSection
+                data={formData}
+                updateData={updateData}
+                goNext={next}
+              />
+            </motion.div>
+          )}
 
-        {step === 2 && (
-          <PrivacySection
-            data={formData}
-            updateData={updateFormData}
-            goBack={() => setStep(1)}
-            goNext={() => setStep(3)}
-          />
-        )}
+          {step === 2 && (
+            <motion.div
+              key="step2"
+              initial={{ opacity: 0, x: 40 * direction, rotate: 4 * direction }}
+              animate={{ opacity: 1, x: 0, rotate: 0 }}
+              exit={{ opacity: 0, x: -40 * direction, rotate: -4 * direction }}
+              transition={{ duration: 0.25 }}
+            >
+              <PrivacySection
+                data={formData}
+                updateData={updateData}
+                goNext={next}
+                goBack={back}
+              />
+            </motion.div>
+          )}
 
-        {step === 3 && (
-          <PersonalSection
-            data={formData}
-            updateData={updateFormData}
-            goBack={() => setStep(2)}
-            goNext={() => setStep(4)}
-          />
-        )}
+          {step === 3 && (
+            <motion.div
+              key="step3"
+              initial={{ opacity: 0, x: 40 * direction, rotate: 4 * direction }}
+              animate={{ opacity: 1, x: 0, rotate: 0 }}
+              exit={{ opacity: 0, x: -40 * direction, rotate: -4 * direction }}
+              transition={{ duration: 0.25 }}
+            >
+              <PersonalSection
+                data={formData}
+                updateData={updateData}
+                goNext={next}
+                goBack={back}
+              />
+            </motion.div>
+          )}
 
-        {step === 4 && <EndSection />}
-      </section>
-    </main>
+          {step === 4 && (
+            <motion.div
+              key="step4"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+            >
+              <EndSection />
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+      </div>
+    </div>
   );
 }
