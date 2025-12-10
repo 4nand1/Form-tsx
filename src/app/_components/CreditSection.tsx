@@ -14,7 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";    
+import { Header } from "./Header";
+
 
 const creditSchema = z.object({
   firstName: z
@@ -60,6 +62,8 @@ export const CreditSection = ({ setStep }: CreditSectionProps) => {
   }
 
   return (
+    <div>
+        <Header step={1} />
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         {/* First name */}
@@ -148,5 +152,6 @@ export const CreditSection = ({ setStep }: CreditSectionProps) => {
         </Button>
       </form>
     </Form>
+    </div>
   );
 };
