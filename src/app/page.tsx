@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { CreditSection } from "./_components/CreditSection";
@@ -11,31 +11,47 @@ import { EndSection } from "./_components/EndSection";
 export default function Home() {
   const [step, setStep] = useState(1);
 
-  // ⭐ ШИНЭ: АЛХМЫН ЧИГЛЭЛ
+  
   const [direction, setDirection] = useState<1 | -1>(1);
 
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
-    username: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-    dateOfBirth: "",
-    profileImage: null,
+ 
+  const [formData, setFormData] = useState<FormData>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("form-data");
+      if (saved) return JSON.parse(saved);
+    }
+
+    return {
+      firstName: "",
+      lastName: "",
+      username: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+      dateOfBirth: "",
+      profileImage: null, 
+    };
   });
 
+  
   const updateData = (values: Partial<FormData>) =>
-    setFormData((prev) => ({ ...prev, ...values }));
+    setFormData((prev) => {
+      const updated = { ...prev, ...values };
 
-  // ⭐ NEXT → баруун → зүүн
+      
+      localStorage.setItem("form-data", JSON.stringify(updated));
+
+      return updated;
+    });
+
+ 
   const next = () => {
     setDirection(1);
     setStep((s) => s + 1);
   };
 
-  // ⭐ BACK → зүүн → баруун
+ 
   const back = () => {
     setDirection(-1);
     setStep((s) => s - 1);
@@ -44,9 +60,8 @@ export default function Home() {
   return (
     <div className="flex justify-center py-10">
       <div className="w-full max-w-md">
-        
         <AnimatePresence mode="wait">
-          
+
           {step === 1 && (
             <motion.div
               key="step1"
