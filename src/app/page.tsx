@@ -61,6 +61,7 @@ export default function Home() {
     <div className="flex justify-center py-10">
       <div className="w-full max-w-md">
         <AnimatePresence mode="wait">
+          
 
           {step === 1 && (
             <motion.div

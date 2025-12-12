@@ -36,7 +36,7 @@ type Props = {
 export const PersonalSection = ({ data, updateData, goBack, goNext }: Props) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  // Хэрвээ өмнө зураг сонгосон бол preview харуулна
+ 
   useEffect(() => {
     if (data.profileImage) {
       const url = URL.createObjectURL(data.profileImage);
