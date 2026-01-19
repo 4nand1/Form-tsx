@@ -8,13 +8,23 @@ import { PrivacySection } from "./_components/PrivacySection";
 import { PersonalSection } from "./_components/PersonalSection";
 import { EndSection } from "./_components/EndSection";
 
+export interface FormData {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  dateOfBirth: string;
+  profileImage: File | null;
+}
+
 export default function Home() {
   const [step, setStep] = useState(1);
 
-  
   const [direction, setDirection] = useState<1 | -1>(1);
 
- 
   const [formData, setFormData] = useState<FormData>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("form-data");
@@ -30,28 +40,24 @@ export default function Home() {
       password: "",
       confirmPassword: "",
       dateOfBirth: "",
-      profileImage: null, 
+      profileImage: null,
     };
   });
 
-  
   const updateData = (values: Partial<FormData>) =>
     setFormData((prev) => {
       const updated = { ...prev, ...values };
 
-      
       localStorage.setItem("form-data", JSON.stringify(updated));
 
       return updated;
     });
 
- 
   const next = () => {
     setDirection(1);
     setStep((s) => s + 1);
   };
 
- 
   const back = () => {
     setDirection(-1);
     setStep((s) => s - 1);
@@ -61,8 +67,6 @@ export default function Home() {
     <div className="flex justify-center py-10">
       <div className="w-full max-w-md">
         <AnimatePresence mode="wait">
-          
-
           {step === 1 && (
             <motion.div
               key="step1"
@@ -124,7 +128,6 @@ export default function Home() {
               <EndSection />
             </motion.div>
           )}
-
         </AnimatePresence>
       </div>
     </div>
